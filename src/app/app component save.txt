@@ -5,8 +5,6 @@ import { Item } from './Item';
 import { NgForm }   from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import {Observable} from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
 //import 'rxjs/add/operator/toPromise';
 
 @Injectable()
@@ -15,36 +13,18 @@ import { HttpHeaders } from '@angular/common/http';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-
-
-
-
 export class AppComponent {
-    constructor(private http: HttpClient){}
-
-     
-    private httpOptions = {
-  headers: new HttpHeaders({'Content-Type':  'application/json'})
-};
-
+    constructor(private _http: Http){}
+        private headers = new Headers({'Content-Type': 'application/json'});
   	title = 'AGILE';
-
-
   	onSubmit(form: NgForm): Promise <Item>{
-        return this.http.post('http://127.0.0.1:8000/api/items', JSON.stringify(form.value),this.httpOptions)
-
+        return this._http.post('http://127.0.0.1:8000/api/items', JSON.stringify(form.value), {headers: this.headers})
   		   .toPromise()
-    	        
+    	           .then(res => res.json().data)
     	            .catch(this.handleError);
-
-
-
-
-
   }
   private handleError(error: any): Promise<any> {
   console.error('An error occurred', error);
   return Promise.reject(error.message || error);
   }
 }
-
